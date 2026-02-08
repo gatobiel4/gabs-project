@@ -85,6 +85,9 @@ The engine maintains a high-performance loop executing the following order every
 
 ## 📜 Patch Notes
 
+### v0.1.1 #4 - 2026-02-08
+- Fixed Main Menu visibility by adding camera setup
+
 ### v0.1.0 #3 - 2026-02-08
 - Reorganized project structure, integrated Havok Physics, and created Main Menu UI
 
