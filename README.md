@@ -29,10 +29,11 @@ Welcome to the **Chronicles of G**, an immersive role-playing game (RPG) built f
 - [x] **Scene Management**: Logic for switching between managed `BABYLON.Scene` instances.
 - [x] **Rendering Pipeline**: PBR Materials, Bloom, Antialiasing, and MSAA integration.
 - [ ] **Input Manager**: Unified `DeviceSourceManager` for Gamepad, Keyboard, and Mouse.
-- [ ] **Physics Integration**: Havok Plugin for high-performance collisions and raycasting.
+- [x] **Physics Integration**: Havok Plugin for high-performance collisions and raycasting.
 - [x] **Debug Console**: Real-time event monitoring with toggle button and log export.
 
 ### Phase 1: Core RPG Systems ⚔️
+- [x] **Main Menu**: Initial screen with centered title using Comic Sans.
 - [ ] **Character Controller**: Implementation of movement, animations, and gravity.
 - [ ] **Combat System**: Basic melee/magic combat and health management.
 - [ ] **Inventory & Items**: Item collection and inventory UI system.
@@ -42,7 +43,19 @@ Welcome to the **Chronicles of G**, an immersive role-playing game (RPG) built f
 
 ---
 
-## 🚀 Project Flow
+## � Project Structure
+
+To maintain high scalability, the project follows a modular directory structure:
+
+*   **`src/core/`**: The engine's nervous system (`engine.js`, `debug.js`, `assets.js`).
+*   **`src/physics/`**: High-performance physics wrappers (`physics.js`).
+*   **`src/ui/`**: User interface components and global styles (`ui_main_menu.js`, `style.css`).
+*   **`src/graphics/`**: (Planned) 3D shaders, VFX, and post-processing scripts.
+*   **`src/audio/`**: (Planned) Sound management and spatial audio triggers.
+
+---
+
+## �🚀 Project Flow
 
 The **Chronicles of G** engine follows a strict architectural pipeline inspired by professional game engines like Unity, ensuring predictable execution and modularity.
 
@@ -52,7 +65,7 @@ The **Chronicles of G** engine follows a strict architectural pipeline inspired 
 
 ### 2. Initialization Phase
 *   **Registration**: Global systems and game scripts are registered via `gameEngine.addScript()`.
-*   **Awake**: The engine triggers `awake()` on all components. This is the stage for internal variable initialization and scene creation (`createScene`).
+*   **Awake**: The engine triggers `awake()` on all components. This is the stage for internal variable initialization and scene creation (`createScene`). Havok Physics is also initialized here.
 
 ### 3. Execution Phase
 *   **Start**: Triggered once after all Awake calls. Used for cross-script communication or logic that requires a fully loaded world.
@@ -67,19 +80,28 @@ The engine maintains a high-performance loop executing the following order every
 *   **Toggle Button**: A "DEBUG" button (bottom-right) shows/hides the console overlay.
 *   **Real-Time Logging**: Monitors all lifecycle events, system initialization, and errors with timestamps.
 *   **Export Functionality**: Download complete logs as `consolelog_YYYY-MM-DD_HH-MM-SS.txt` for debugging.
-*   **Color-Coded**: Info (gray), Warnings (orange), Errors (red), System (cyan), Lifecycle (magenta).
 
 ---
 
 ## 📜 Patch Notes
 
+### v0.1.0 #3 - 2026-02-08
+- Reorganized project structure, integrated Havok Physics, and created Main Menu UI
+
+### v0.1.2 #1 - 2026-02-08
+- **Project Reorganization**: Migrated all core systems to `/src` (Core, Physics, UI).
+- **Physics Integration**: Fully integrated **Havok Physics V2** with a dedicated manager.
+- **Main Menu**: Created the first UI scene with a centered Comic Sans title.
+- **GUI Library**: Added `BABYLON.GUI` integration for advanced interface design.
+
 ### v0.1.1 #1 - 2026-02-08
 - Implemented **Asset Loader** system using `BABYLON.AssetsManager`.
 - Integrated Asset Loader into the core engine lifecycle.
 - Enhanced **Debug Console** with detailed system initialization logs.
-- Added version fetching functionality to display engine version on startup.
 
 ### v0.1.0 #1 - 2026-02-08
+- Initialized version control system and automated commit workflow.
+- Established SemVer vX.Y.Z #A format.
 
 ---
 
@@ -87,6 +109,7 @@ The engine maintains a high-performance loop executing the following order every
 
 - **Lead Developer**: @gatobiel4
 - **Engine**: [Babylon.js](https://www.babylonjs.com/)
+- **Physics**: [Havok](https://www.havok.com/)
 - **Assets**: TBD
 
 ---

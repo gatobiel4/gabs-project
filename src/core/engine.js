@@ -9,6 +9,7 @@
 
 import { DebugConsole } from './debug.js';
 import { AssetLoader } from './assets.js';
+import { PhysicsManager } from '../physics/physics.js';
 
 export class Engine {
     // -------------------------------------------------------------------------
@@ -35,6 +36,12 @@ export class Engine {
 
     /** @type {AssetLoader} */
     assets = null;
+
+    /** @type {PhysicsManager} */
+    physics = null;
+
+    /** @type {BABYLON.HavokPlugin} */
+    physicsPlugin = null;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -88,6 +95,21 @@ export class Engine {
      */
     async awake() {
         this.debug?.logLifecycle('AWAKE');
+
+        // Initialize Physics (Havok)
+        try {
+            const havokInstance = await HavokPhysics();
+            this.physicsPlugin = new BABYLON.HavokPlugin(true, havokInstance);
+            this.debug?.logSystemInit('Havok Physics');
+
+            // Enable physics on any scenes created before Havok was ready
+            for (const scene of this.scenes.values()) {
+                this._enablePhysicsOnScene(scene);
+            }
+        } catch (e) {
+            this.debug?.logError('Failed to initialize Havok Physics');
+        }
+
         this.debug?.logSystemInit('Component Registry');
 
         // Universal event handlers (Input Management)
@@ -98,6 +120,10 @@ export class Engine {
 
         // Initialize all registered components
         for (const script of this.scripts) {
+            // Re-assign physics/assets in case they were initialized after addScript
+            script.assets = this.assets;
+            script.physics = this.physics;
+
             if (script.awake) {
                 await script.awake();
                 this.debug?.log(`Component Awakened: ${script.constructor.name}`, 'system');
@@ -173,9 +199,25 @@ export class Engine {
             // Initialize Asset Loader with the primary scene
             this.assets = new AssetLoader(this, scene);
             this.debug?.logSystemInit('Resource Management System');
+
+            // Note: Physics will be enabled on this scene during Engine.awake()
+            // if it hasn't been initialized yet.
+            if (this.physicsPlugin) {
+                this._enablePhysicsOnScene(scene);
+            }
         }
 
         return scene;
+    }
+
+    /**
+     * Internal helper to enable physics on a scene
+     * @param {BABYLON.Scene} scene 
+     */
+    _enablePhysicsOnScene(scene) {
+        scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), this.physicsPlugin);
+        this.physics = new PhysicsManager(scene);
+        this.debug?.logSystemInit(`Physics Enabled: ${scene.rootNodes.length > 0 ? 'Active' : 'Empty Scene'}`);
     }
 
     /**
@@ -206,6 +248,7 @@ export class Engine {
         script.babylonEngine = this.babylonEngine;
         script.canvas = this.canvas;
         script.assets = this.assets;
+        script.physics = this.physics;
 
         this.scripts.push(script);
         this.debug?.log(`Script registered: ${script.constructor.name}`, 'system');
