@@ -7,7 +7,10 @@ import { Engine } from './engine.js';
 window.addEventListener('DOMContentLoaded', async () => {
     const gameEngine = new Engine("renderCanvas", true); // Debug mode enabled
 
-    // Initializing the Unity-like lifecycle from a clean state
+    // Create the primary scene (initializes AssetLoader)
+    gameEngine.createScene("MainLevel");
+
+    // Initializing the Unity-like lifecycle
     await gameEngine.awake();
     await gameEngine.start();
 });

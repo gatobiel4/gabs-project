@@ -13,15 +13,32 @@ Welcome to the **Chronicles of G**, an immersive role-playing game (RPG) built f
 ## 🛠️ Development Plan
 
 ### Phase 0: Engine Infrastructure (Unity-Inspired) 🏛️
-- [x] **Lifecycle Management**: Implement `Awake`, `Start`, `Update`, and `LateUpdate` hooks.
-- [ ] **Component System**: Establish a modular "Script" registration system for `GameObjects`.
-- [x] **DeltaTime Core**: Ensure frame-independent logic is baked into the main loop.
-- [ ] **Input Manager**: Create a centralized system for handling Keyboard, Mouse, and Gamepad states.
-- [ ] **Asset Loader**: Build a Unity-like `Resources` system for loading `.glb`, textures, and sounds.
-- [x] **Scene Management**: Implement logic for switching between different scenes (Menu, Level 1, etc.).
-- [x] **Rendering Pipeline**: Integrated Default Rendering Pipeline (Bloom, Antialiasing, MSAA).
+
+#### 1. Low-Level Foundation (The Browser Bridge)
+- [x] **Engine Core**: `BABYLON.Engine` & `ThinEngine` hardware abstraction layer.
+- [x] **Math Library**: High-performance optimized math (`Vector3`, `Matrix`, `Quaternion`).
+- [x] **Asset Loader**: `BABYLON.AssetsManager` system for `.glb`, textures, and sounds.
 - [x] **Version Control**: Auto-incrementing SemVer `vX.Y.Z #A` with Git integration.
-- [x] **Debug Console**: Real-time event monitoring with toggle button and log export functionality.
+
+#### 2. The Simulation Loop (The Heartbeat)
+- [x] **Lifecycle Management**: Implement `Awake`, `Start`, `Update`, and `LateUpdate` hooks.
+- [x] **Component System**: Modular "Script" registration system for GameObjects.
+- [x] **DeltaTime Core**: `scene.getAnimationRatio()` logic for frame-independent logic.
+
+#### 3. High-Level Runtime Systems
+- [x] **Scene Management**: Logic for switching between managed `BABYLON.Scene` instances.
+- [x] **Rendering Pipeline**: PBR Materials, Bloom, Antialiasing, and MSAA integration.
+- [ ] **Input Manager**: Unified `DeviceSourceManager` for Gamepad, Keyboard, and Mouse.
+- [ ] **Physics Integration**: Havok Plugin for high-performance collisions and raycasting.
+- [x] **Debug Console**: Real-time event monitoring with toggle button and log export.
+
+### Phase 1: Core RPG Systems ⚔️
+- [ ] **Character Controller**: Implementation of movement, animations, and gravity.
+- [ ] **Combat System**: Basic melee/magic combat and health management.
+- [ ] **Inventory & Items**: Item collection and inventory UI system.
+- [ ] **NPC & Dialogues**: Interaction system with interactive dialogues.
+- [ ] **Level Design**: Creation of the first playable map with environment assets.
+- [ ] **Save System**: Local storage for character progress and inventory.
 
 ---
 
@@ -56,9 +73,13 @@ The engine maintains a high-performance loop executing the following order every
 
 ## 📜 Patch Notes
 
+### v0.1.1 #1 - 2026-02-08
+- Implemented **Asset Loader** system using `BABYLON.AssetsManager`.
+- Integrated Asset Loader into the core engine lifecycle.
+- Enhanced **Debug Console** with detailed system initialization logs.
+- Added version fetching functionality to display engine version on startup.
+
 ### v0.1.0 #1 - 2026-02-08
-- Initialized version control system and automated commit workflow.
-- Established SemVer vX.Y.Z #A format.
 
 ---
 

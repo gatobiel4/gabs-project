@@ -8,6 +8,7 @@
  */
 
 import { DebugConsole } from './debug.js';
+import { AssetLoader } from './assets.js';
 
 export class Engine {
     // -------------------------------------------------------------------------
@@ -31,6 +32,9 @@ export class Engine {
 
     /** @type {DebugConsole} */
     debug = null;
+
+    /** @type {AssetLoader} */
+    assets = null;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -56,6 +60,21 @@ export class Engine {
         this.debug = new DebugConsole(debugMode);
         if (debugMode) {
             this.debug.logSystemInit('Babylon.js Engine');
+            this.fetchVersion();
+        }
+    }
+
+    /**
+     * Fetches and logs the engine version from version.json
+     */
+    async fetchVersion() {
+        try {
+            const response = await fetch('./version.json');
+            const data = await response.json();
+            const version = `v${data.major}.${data.minor}.${data.patch} #${data.build}`;
+            this.debug?.log(`Project Version: ${version}`, 'system');
+        } catch (e) {
+            this.debug?.logWarning('Could not load version.json');
         }
     }
 
@@ -69,18 +88,19 @@ export class Engine {
      */
     async awake() {
         this.debug?.logLifecycle('AWAKE');
+        this.debug?.logSystemInit('Component Registry');
 
-        // Universal event handlers
+        // Universal event handlers (Input Management)
         window.addEventListener("resize", () => {
             this.babylonEngine.resize();
         });
-        this.debug?.logSystemInit('Resize Handler');
+        this.debug?.logSystemInit('Input Manager (Resize & Keys)');
 
         // Initialize all registered components
         for (const script of this.scripts) {
             if (script.awake) {
                 await script.awake();
-                this.debug?.log(`Script awakened: ${script.constructor.name}`, 'system');
+                this.debug?.log(`Component Awakened: ${script.constructor.name}`, 'system');
             }
         }
     }
@@ -149,6 +169,10 @@ export class Engine {
         if (!this.activeScene) {
             this.activeScene = scene;
             this.debug?.log(`Active scene set to: ${name}`, 'system');
+
+            // Initialize Asset Loader with the primary scene
+            this.assets = new AssetLoader(this, scene);
+            this.debug?.logSystemInit('Resource Management System');
         }
 
         return scene;
@@ -181,6 +205,7 @@ export class Engine {
         script.engine = this;
         script.babylonEngine = this.babylonEngine;
         script.canvas = this.canvas;
+        script.assets = this.assets;
 
         this.scripts.push(script);
         this.debug?.log(`Script registered: ${script.constructor.name}`, 'system');
