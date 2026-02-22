@@ -39,7 +39,7 @@ export const MainMenuUI: React.FC = () => {
             alignItems: 'center',
             pointerEvents: hasStarted ? 'auto' : 'none',
             color: '#eaeaea',
-            fontFamily: '"Cinzel", "Georgia", serif', // Classic Fantasy font stack
+            fontFamily: '"Vahika", "Cinzel", "Georgia", serif', // Classic Fantasy font stack
             textShadow: '0 2px 4px rgba(0,0,0,0.8)'
         }}>
 

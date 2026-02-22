@@ -1,0 +1,78 @@
+[
+    {
+        "id": "warrior",
+        "name": "Warrior",
+        "description": "A hardened fighter who stands at the vanguard of every battle. Warriors rely on brute strength and iron resolve to outlast any foe.",
+        "bonusDescription": "High HP and Strength — Low MP and Intelligence",
+        "baseStats": {
+            "strength": 18,
+            "dexterity": 10,
+            "intelligence": 5,
+            "vitality": 16,
+            "maxHp": 130,
+            "maxMp": 20,
+            "speed": 4.5
+        },
+        "startingSkills": [
+            "slash",
+            "shield_bash"
+        ]
+    },
+    {
+        "id": "mage",
+        "name": "Mage",
+        "description": "A scholar of the arcane arts who bends reality through sheer intellect. Fragile in body but devastating in power — one wrong step is the last.",
+        "bonusDescription": "High MP and Intelligence — Low HP and Strength",
+        "baseStats": {
+            "strength": 5,
+            "dexterity": 8,
+            "intelligence": 22,
+            "vitality": 6,
+            "maxHp": 60,
+            "maxMp": 130,
+            "speed": 4.0
+        },
+        "startingSkills": [
+            "fireball",
+            "arcane_bolt"
+        ]
+    },
+    {
+        "id": "rogue",
+        "name": "Rogue",
+        "description": "A creature of shadow and opportunity. Rogues strike from the dark with lethal precision, vanishing before enemies can react.",
+        "bonusDescription": "High Dexterity and Speed — Average HP and MP",
+        "baseStats": {
+            "strength": 10,
+            "dexterity": 22,
+            "intelligence": 10,
+            "vitality": 10,
+            "maxHp": 90,
+            "maxMp": 60,
+            "speed": 6.0
+        },
+        "startingSkills": [
+            "backstab",
+            "dodge"
+        ]
+    },
+    {
+        "id": "cleric",
+        "name": "Cleric",
+        "description": "A warrior of faith who channels divine power to heal allies and smite the undead. Neither pure fighter nor pure mage — the Cleric defies easy classification.",
+        "bonusDescription": "Balanced stats with high Vitality — Focus on support",
+        "baseStats": {
+            "strength": 12,
+            "dexterity": 8,
+            "intelligence": 16,
+            "vitality": 18,
+            "maxHp": 110,
+            "maxMp": 90,
+            "speed": 4.5
+        },
+        "startingSkills": [
+            "heal",
+            "holy_strike"
+        ]
+    }
+]

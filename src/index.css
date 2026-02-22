@@ -1,5 +1,34 @@
+/* ── Vahika Font ──────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Vahika';
+  src: url('/assets/fonts/Vahika.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vahika';
+  src: url('/assets/fonts/Vahika Bd.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vahika';
+  src: url('/assets/fonts/Vahika It.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Vahika';
+  src: url('/assets/fonts/Vahika Bd It.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Vahika', 'Cinzel', 'Georgia', serif;
   line-height: 1.5;
   font-weight: 400;
 

@@ -1,6 +1,7 @@
 import { BabylonCanvas } from './app/BabylonCanvas';
 import { useGameStore } from './state/gameStore';
 import { MainMenuUI } from './game/ui/MainMenuUI';
+import { CharacterCreateUI } from './game/ui/CharacterCreateUI';
 import './App.css';
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
 
       {/* RENDER MAIN MENU UI over the canvas if we are in the main menu scene state */}
       {currentScene === 'MainMenuScene' && <MainMenuUI />}
+
+      {/* RENDER CHARACTER CREATION UI when in CharacterCreateScene */}
+      {currentScene === 'CharacterCreateScene' && <CharacterCreateUI />}
 
       {/* UI Overlay to test scene switching (Temp Debugger) */}
       <div style={{
