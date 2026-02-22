@@ -14,6 +14,7 @@ import {
 import { GridMaterial } from '@babylonjs/materials';
 import { Player } from '../entities/Player';
 import { MovementSystem } from '../systems/MovementSystem';
+import { useGameStore } from '../../state/gameStore';
 
 export const createWorldScene = (engine: Engine): Scene => {
     const scene = new Scene(engine);
@@ -67,6 +68,10 @@ export const createWorldScene = (engine: Engine): Scene => {
 
     scene.registerBeforeRender(() => {
         const dt = engine.getDeltaTime() / 1000;
+        const { isPaused } = useGameStore.getState();
+
+        // Skip all game logic while paused
+        if (isPaused) return;
 
         // Tick all registered entities via MovementSystem
         movementSystem.update(dt, scene);

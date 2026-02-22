@@ -1,11 +1,24 @@
+import { useEffect } from 'react';
 import { BabylonCanvas } from './app/BabylonCanvas';
 import { useGameStore } from './state/gameStore';
 import { MainMenuUI } from './game/ui/MainMenuUI';
 import { CharacterCreateUI } from './game/ui/CharacterCreateUI';
+import { PauseMenuUI } from './game/ui/PauseMenuUI';
 import './App.css';
 
 function App() {
-  const { currentScene, setScene } = useGameStore();
+  const { currentScene, setScene, isPaused, togglePause } = useGameStore();
+
+  // ESC key toggles pause — only when in WorldScene
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && currentScene === 'WorldScene') {
+        togglePause();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentScene, togglePause]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative', background: '#000' }}>
@@ -17,6 +30,9 @@ function App() {
 
       {/* RENDER CHARACTER CREATION UI when in CharacterCreateScene */}
       {currentScene === 'CharacterCreateScene' && <CharacterCreateUI />}
+
+      {/* RENDER PAUSE MENU when in WorldScene and paused */}
+      {currentScene === 'WorldScene' && isPaused && <PauseMenuUI />}
 
       {/* UI Overlay to test scene switching (Temp Debugger) */}
       <div style={{

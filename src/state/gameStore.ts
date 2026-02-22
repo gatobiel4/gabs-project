@@ -8,6 +8,11 @@ interface GameState {
     currentScene: SceneName;
     setScene: (scene: SceneName) => void;
 
+    // ── Pause ────────────────────────────────────────────────────
+    isPaused: boolean;
+    setPaused: (value: boolean) => void;
+    togglePause: () => void;
+
     // ── Character Selection ──────────────────────────────────────
     selectedRaceId: string | null;
     selectedClassId: string | null;
@@ -23,6 +28,11 @@ export const useGameStore = create<GameState>((set) => ({
     // Scene
     currentScene: 'MainMenuScene',
     setScene: (scene) => set({ currentScene: scene }),
+
+    // Pause
+    isPaused: false,
+    setPaused: (value) => set({ isPaused: value }),
+    togglePause: () => set((state) => ({ isPaused: !state.isPaused })),
 
     // Character
     selectedRaceId: null,

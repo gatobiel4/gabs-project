@@ -68,27 +68,27 @@ Use this checklist to track progress. Mark items as you complete them.
 ---
 
 ## 7) UI (React)
-- [ ] Main Menu screen
-- [ ] Character Creation screen
+- [x] Main Menu screen
+- [x] Character Creation screen
 - [ ] HUD (HP/MP/Level)
 - [ ] Inventory window
 - [ ] Dialogue window
 - [ ] Quest log
-- [ ] Pause/Settings menu
-- [ ] Wire UI state through Zustand/Redux
+- [x] Pause/Settings menu *(stub — Step 15)*
+- [x] Wire UI state through Zustand
 
 ---
 
 ## 8) Data-Driven RPG (JSON)
-- [ ] Create `races.json`
-- [ ] Create `classes.json`
+- [x] Create `races.json`
+- [x] Create `classes.json`
 - [ ] Create `items.json`
 - [ ] Create `skills.json`
 - [ ] Create `quests.json`
-- [ ] Define Zod schemas for all data
-- [ ] Implement data loader + validation at startup
-- [ ] Implement `CharacterFactory` to compute final stats
-- [ ] Connect character creation to spawn configured player
+- [x] Define Zod schemas for all data
+- [x] Implement data loader + validation at startup
+- [x] Implement `CharacterFactory` to compute final stats
+- [x] Connect character creation to spawn configured player
 
 ---
 
