@@ -3,8 +3,8 @@ param (
     [string]$Message = "Commit"
 )
 
-$versionFile = "c:\Users\gabri\OneDrive\Documentos\gabs-project\gabs-project\version.json"
-$readmeFile = "c:\Users\gabri\OneDrive\Documentos\gabs-project\gabs-project\README.md"
+$versionFile = "c:\Users\gabri\OneDrive\Documentos\gabs_proj\gabs-project\version.json"
+$readmeFile = "c:\Users\gabri\OneDrive\Documentos\gabs_proj\gabs-project\README.md"
 
 if (-not (Test-Path $versionFile)) {
     Write-Error "version.json not found"
