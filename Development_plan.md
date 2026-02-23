@@ -184,13 +184,15 @@ Use this checklist to track progress. Mark items as you complete them.
 ### Main Menu
 - [ ] Wire "New Game" button → CharacterCreateScene (instead of WorldScene directly)
 - [ ] Enable "Continue" button when save data exists (Step 13)
-- [ ] Add animated background particles or depth to the scene
+- [x] Add animated background particles or depth to the scene (Video background)
+- [ ] Add ambient menu music and sound effects on hover/click
 
 ### Character Creation
 - [ ] Add race/class icons or silhouette illustrations
 - [ ] Animate stat values when switching race or class
 - [ ] Add visual stat bars (HP/MP/STR as filled bars instead of numbers)
 - [ ] Improve small screen / responsive layout
+- [ ] Implement a live 3D preview of the character build in the UI background
 
 ### World Scene
 - [ ] Remove or toggle debug grid (dev-only mode)
@@ -198,11 +200,15 @@ Use this checklist to track progress. Mark items as you complete them.
 - [ ] Improve ground — texture variation, grass patches
 - [ ] Add ambient fog for atmosphere
 - [ ] Improve directional light angle and shadow
+- [ ] Add Post-Processing / Default Pipeline (Bloom, Antialiasing, Color Grading)
+- [ ] Add subtle environmental particle effects (dust motes, falling leaves)
 
 ### Player
-- [ ] Add a subtle bobbing animation while moving (idle/walk feel)
+- [x] Add a subtle bobbing animation while moving (idle/walk feel) (Added 3D animations)
 - [ ] Improve click marker — shrink animation, coloured ring
-- [ ] Replace capsule with a proper low-poly character mesh (Step 14)
+- [x] Replace capsule with a proper low-poly character mesh (Step 14) (Integrated character-male-d.glb)
+- [ ] Add a baked drop shadow or blob shadow directly under the player
+- [ ] Add footstep particle puffs when moving
 
 ### Pause Menu
 - [ ] Add background blur intensity slider (visual polish)
@@ -212,3 +218,4 @@ Use this checklist to track progress. Mark items as you complete them.
 - [ ] Move debug overlay to a dev-only toggle (`?debug=true` URL param)
 - [ ] Add a loading screen between scene transitions
 - [ ] Add global error boundary for graceful crash handling
+- [ ] Implement a custom ARPG-style hardware mouse cursor (Gauntlet/Pointer)

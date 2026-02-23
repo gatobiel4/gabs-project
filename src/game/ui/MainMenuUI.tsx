@@ -40,8 +40,41 @@ export const MainMenuUI: React.FC = () => {
             pointerEvents: hasStarted ? 'auto' : 'none',
             color: '#eaeaea',
             fontFamily: '"Vahika", "Cinzel", "Georgia", serif', // Classic Fantasy font stack
-            textShadow: '0 2px 4px rgba(0,0,0,0.8)'
+            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+            zIndex: 10 // Establishes a stacking context so the video doesn't hide behind the 3D canvas
         }}>
+
+            {/* Background Video — plays once and freezes on the final frame */}
+            <video
+                src="/assets/bg/backgroundmenu.mp4"
+                autoPlay
+                muted
+                playsInline
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    objectFit: 'cover',
+                    zIndex: -2,
+                }}
+            />
+
+            {/* Vignette Overlay — heavily darkens the edges for a cinematic shadow effect */}
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                background: 'radial-gradient(circle, rgba(0, 0, 0, 0.55) 25%, rgba(2, 2, 5, 0.9) 75%, rgba(0, 0, 0, 1) 100%)',
+                zIndex: -1,
+                pointerEvents: 'none'
+            }} />
+
+            {/* Weather System: Rain Effect */}
+            <RainOverlay />
 
             {/* 1. Main Game Title (Always stays on screen, but moves slightly when menu opens) */}
             <h1 style={{
@@ -164,7 +197,9 @@ const MenuButton = ({ children, onClick, disabled = false }: { children: React.R
                 border: 'none',
                 borderTop: '1px solid transparent',
                 borderBottom: '1px solid transparent',
-                boxShadow: activeHover ? '0 -1px 0 rgba(245, 215, 110, 0.4), 0 1px 0 rgba(245, 215, 110, 0.4)' : 'none',
+                boxShadow: activeHover
+                    ? '0 -1px 0 rgba(245, 215, 110, 0.4), 0 1px 0 rgba(245, 215, 110, 0.4)'
+                    : 'none',
                 color: disabled ? '#555' : (activeHover ? '#fff' : '#ccc'),
                 padding: '0.8rem 4rem',
                 fontSize: '1.4rem',
@@ -174,7 +209,11 @@ const MenuButton = ({ children, onClick, disabled = false }: { children: React.R
                 transition: 'all 0.3s ease',
                 cursor: disabled ? 'not-allowed' : 'pointer',
                 width: '100%',
-                textShadow: disabled ? 'none' : (activeHover ? '0 0 10px rgba(255,255,255,0.8)' : '0 2px 4px rgba(0,0,0,0.8)'),
+                textShadow: disabled
+                    ? '0 2px 4px rgba(0,0,0,1)'
+                    : (activeHover
+                        ? '0 0 20px rgba(245,215,110,0.9), 0 4px 15px rgba(0,0,0,1), 0 8px 30px rgba(0,0,0,1)'
+                        : '0 4px 15px rgba(0,0,0,1), 0 8px 30px rgba(0,0,0,1)'),
                 opacity: disabled ? 0.6 : 1
             }}
         >
@@ -184,5 +223,53 @@ const MenuButton = ({ children, onClick, disabled = false }: { children: React.R
                 <span style={{ color: '#f5d76e', paddingLeft: '15px', opacity: activeHover ? 1 : 0, transition: 'opacity 0.2s', width: '20px', textAlign: 'center' }}>✦</span>
             </span>
         </button>
+    );
+};
+
+// ─── Weather Effects: Rain ──────────────────────────────────────────────────
+const RainOverlay: React.FC = () => {
+    // Generate an array of raindrops with random starting positions and speeds
+    // Reduced count for performance — compensated by slightly thicker drops
+    const rainDrops = Array.from({ length: 250 }).map((_, i) => {
+        // Spread the rain further to the right horizontally so it doesn't leave gaps as it falls to the left
+        const left = Math.random() * 250 - 50;
+        const animDuration = 0.2 + Math.random() * 0.3; // Fast drops
+        const animDelay = Math.random() * -3;
+        const opacity = 0.25 + Math.random() * 0.5; // Highly visible
+        const width = Math.random() > 0.6 ? '2px' : '1px'; // Thicker drops on average
+
+        return (
+            <div key={i} style={{
+                position: 'absolute',
+                top: '-20vh',
+                left: `${left}vw`,
+                width: width,
+                height: `${70 + Math.random() * 60}px`, // Longer drops for motion blur
+                background: `linear-gradient(to bottom, transparent, rgba(200, 220, 255, ${opacity}))`,
+                animation: `fall ${animDuration}s linear ${animDelay}s infinite`,
+                pointerEvents: 'none'
+            }} />
+        );
+    });
+
+    return (
+        <div style={{
+            position: 'absolute',
+            inset: 0,
+            overflow: 'hidden',
+            zIndex: -1,
+            pointerEvents: 'none',
+        }}>
+            {rainDrops}
+            <style>
+                {`
+                @keyframes fall {
+                    /* Rotate first so the Y translation moves diagonally! */
+                    0% { transform: rotate(25deg) translateY(0vh); }
+                    100% { transform: rotate(25deg) translateY(140vh); }
+                }
+                `}
+            </style>
+        </div>
     );
 };
