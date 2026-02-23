@@ -176,3 +176,39 @@ Use this checklist to track progress. Mark items as you complete them.
 - [ ] Configure build pipeline for desktop
 - [ ] Test filesystem access (if needed)
 - [ ] Ship a desktop build from the same codebase
+
+---
+
+## 🔧 Improvements (Refinements to existing features)
+
+### Main Menu
+- [ ] Wire "New Game" button → CharacterCreateScene (instead of WorldScene directly)
+- [ ] Enable "Continue" button when save data exists (Step 13)
+- [ ] Add animated background particles or depth to the scene
+
+### Character Creation
+- [ ] Add race/class icons or silhouette illustrations
+- [ ] Animate stat values when switching race or class
+- [ ] Add visual stat bars (HP/MP/STR as filled bars instead of numbers)
+- [ ] Improve small screen / responsive layout
+
+### World Scene
+- [ ] Remove or toggle debug grid (dev-only mode)
+- [ ] Remove debug scene switcher overlay from top-right (dev-only)
+- [ ] Improve ground — texture variation, grass patches
+- [ ] Add ambient fog for atmosphere
+- [ ] Improve directional light angle and shadow
+
+### Player
+- [ ] Add a subtle bobbing animation while moving (idle/walk feel)
+- [ ] Improve click marker — shrink animation, coloured ring
+- [ ] Replace capsule with a proper low-poly character mesh (Step 14)
+
+### Pause Menu
+- [ ] Add background blur intensity slider (visual polish)
+- [ ] Add game version display in the corner
+
+### General / App
+- [ ] Move debug overlay to a dev-only toggle (`?debug=true` URL param)
+- [ ] Add a loading screen between scene transitions
+- [ ] Add global error boundary for graceful crash handling

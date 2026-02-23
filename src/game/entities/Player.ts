@@ -1,4 +1,5 @@
-import { Scene, MeshBuilder, StandardMaterial, Color3, Vector3 } from '@babylonjs/core';
+import { Scene, MeshBuilder, StandardMaterial, Color3, Vector3, SceneLoader, AnimationGroup } from '@babylonjs/core';
+import '@babylonjs/loaders/glTF'; // Registers GLB/glTF support
 import { Entity } from './Entity';
 
 /** Stats that define the player's current state */
@@ -27,13 +28,19 @@ const DEFAULT_STATS: PlayerStats = {
     intelligence: 10,
 };
 
-const STOP_THRESHOLD = 0.15;     // Units — how close is "close enough" to stop
-const ROTATION_SPEED = 10;       // Radians per second for turning
+const STOP_THRESHOLD = 0.15;
+const ROTATION_SPEED = 10;
+
+const MODEL_PATH = '/assets/models/GLB format/';
+const MODEL_FILE = 'character-male-d.glb';
 
 export class Player extends Entity {
     public stats: PlayerStats;
 
-    // Internal movement state
+    // Internal animation state
+    private _animations: Record<string, AnimationGroup> = {};
+    private _currentAnimName: string | null = null;
+
     private _target: { x: number; y: number; z: number; hasTarget: boolean } | null = null;
 
     constructor(stats: Partial<PlayerStats> = {}) {
@@ -41,27 +48,69 @@ export class Player extends Entity {
         this.stats = { ...DEFAULT_STATS, ...stats };
     }
 
-    /** Spawn the player mesh into the scene at the given position */
+    /**
+     * Spawn the player into the scene.
+     * Creates an invisible root mesh immediately (so movement works at once),
+     * then asynchronously loads the GLB and parents it to the root.
+     */
     public spawn(scene: Scene, position: Vector3 = Vector3.Zero()): void {
-        const HEIGHT = 1.8;
+        // ── Root mesh — movement pivot, always exists ──────────────
+        const root = MeshBuilder.CreateBox('player', { size: 0.01 }, scene);
+        root.position = new Vector3(position.x, 0, position.z);
+        root.isPickable = false;
+        root.isVisible = false; // Invisible — the GLB child provides visuals
+        this.mesh = root;
 
-        // Placeholder capsule — will be replaced with a 3D model later
-        const mesh = MeshBuilder.CreateCapsule(
-            'player',
-            { radius: 0.4, height: HEIGHT, tessellation: 12 },
-            scene
-        );
-        mesh.position = new Vector3(position.x, HEIGHT / 2, position.z);
-        mesh.isPickable = false; // Clicks pass through to the ground
+        // ── Load GLB asynchronously ────────────────────────────────
+        SceneLoader.ImportMeshAsync('', MODEL_PATH, MODEL_FILE, scene)
+            .then(result => {
+                const modelRoot = result.meshes[0]; // The GLB root node
 
-        const mat = new StandardMaterial('player-mat', scene);
-        mat.diffuseColor = new Color3(0.3, 0.6, 1.0);
-        mat.emissiveColor = new Color3(0.05, 0.1, 0.3);
-        mesh.material = mat;
+                // Parent the model to our root pivot
+                modelRoot.parent = root;
+                modelRoot.position = Vector3.Zero();
+                modelRoot.scaling = new Vector3(1, 1, 1);
+                modelRoot.rotation = Vector3.Zero(); // No flip — face forward naturally
 
-        this.mesh = mesh;
+                // Make all sub-meshes non-pickable (clicks go through to ground)
+                result.meshes.forEach(m => { m.isPickable = false; });
 
-        // Grab the clickTarget set by WorldScene's onPointerDown
+                // ── Animations ───────────────────────────────────────
+                if (result.animationGroups.length > 0) {
+                    // Populate local dictionary
+                    result.animationGroups.forEach(ag => {
+                        this._animations[ag.name.toLowerCase()] = ag;
+                        ag.stop(); // Stop all by default
+                    });
+
+                    // Start idle
+                    this.playAnimation('idle');
+                } else {
+                    console.warn('[Player] No animation groups found in GLB.');
+                }
+
+                console.log(`[Player] Model loaded: ${MODEL_FILE}`);
+            })
+            .catch(err => {
+                console.warn(`[Player] Failed to load GLB, falling back to capsule:`, err);
+
+                // Fallback — show the old blue capsule if loading fails
+                const fallback = MeshBuilder.CreateCapsule(
+                    'player-fallback',
+                    { radius: 0.4, height: 1.8, tessellation: 12 },
+                    scene
+                );
+                fallback.parent = root;
+                fallback.position = new Vector3(0, 0.9, 0);
+                fallback.isPickable = false;
+
+                const mat = new StandardMaterial('player-mat', scene);
+                mat.diffuseColor = new Color3(0.3, 0.6, 1.0);
+                mat.emissiveColor = new Color3(0.05, 0.1, 0.3);
+                fallback.material = mat;
+            });
+
+        // Grab clickTarget set by WorldScene
         this._target = (scene as any).clickTarget ?? null;
     }
 
@@ -99,10 +148,31 @@ export class Player extends Entity {
             if (delta < -Math.PI) delta += Math.PI * 2;
 
             this.mesh.rotation.y += delta * Math.min(ROTATION_SPEED * deltaTime, 1);
+
+            this.playAnimation('walk');
         } else {
             // Reached destination
             this._target.hasTarget = false;
+            this.playAnimation('idle');
         }
+    }
+
+    /** Ensure a smooth transition between animations */
+    private playAnimation(name: string): void {
+        if (this._currentAnimName === name) return; // Already playing
+
+        const newAnim = this._animations[name];
+        if (!newAnim) return; // Doesn't exist
+
+        const oldAnim = this._currentAnimName ? this._animations[this._currentAnimName] : null;
+
+        if (oldAnim) {
+            // Stop old animation smoothly
+            oldAnim.stop();
+        }
+
+        newAnim.play(true); // Loop
+        this._currentAnimName = name;
     }
 
     /** Convenience accessor for world position */
