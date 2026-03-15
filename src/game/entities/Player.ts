@@ -8,6 +8,8 @@ export interface PlayerStats {
     maxHp: number;
     mp: number;
     maxMp: number;
+    xp: number;
+    maxXp: number;
     speed: number;    // Movement units per second
     level: number;
     // These will be expanded by race/class modifiers in Step 8
@@ -21,6 +23,8 @@ const DEFAULT_STATS: PlayerStats = {
     maxHp: 100,
     mp: 50,
     maxMp: 50,
+    xp: 0,
+    maxXp: 100,
     speed: 5,
     level: 1,
     strength: 10,
@@ -189,5 +193,27 @@ export class Player extends Entity {
     /** Heal the player up to their max HP */
     public heal(amount: number): void {
         this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + amount);
+    }
+
+    /**
+     * Award XP to the player.
+     * Triggers a level-up if maxXp is reached.
+     * @returns true if a level-up occurred
+     */
+    public gainXp(amount: number): boolean {
+        this.stats.xp = Math.min(this.stats.maxXp, this.stats.xp + amount);
+        if (this.stats.xp >= this.stats.maxXp) {
+            this.levelUp();
+            return true;
+        }
+        return false;
+    }
+
+    /** Level up stub — increases level and resets XP, scales maxXp */
+    private levelUp(): void {
+        this.stats.level += 1;
+        this.stats.xp = 0;
+        this.stats.maxXp = Math.floor(this.stats.maxXp * 1.5); // Scale XP needed each level
+        console.log(`[Player] Level up! Now level ${this.stats.level}. Next level at ${this.stats.maxXp} XP.`);
     }
 }

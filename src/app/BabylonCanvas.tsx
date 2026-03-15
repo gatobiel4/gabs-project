@@ -64,7 +64,7 @@ export const BabylonCanvas: React.FC = () => {
             {/* FPS Counter Overlay */}
             <div style={{
                 position: 'absolute',
-                top: 10,
+                bottom: 10,
                 left: 10,
                 color: '#e5e7eb',
                 background: 'rgba(0,0,0,0.6)',

@@ -13,8 +13,11 @@ import {
 } from '@babylonjs/core';
 import { GridMaterial } from '@babylonjs/materials';
 import { Player } from '../entities/Player';
+import { NPC } from '../entities/NPC';
+import { Monster } from '../entities/Monster';
 import { MovementSystem } from '../systems/MovementSystem';
 import { useGameStore } from '../../state/gameStore';
+import { debugRegistry } from '../debug/debugRegistry';
 
 export const createWorldScene = (engine: Engine): Scene => {
     const scene = new Scene(engine);
@@ -50,10 +53,14 @@ export const createWorldScene = (engine: Engine): Scene => {
     camera.inputs.removeByType('ArcRotateCameraPointerInput');  // remove mouse drag rotation
 
     // ─────────────────────────────────────────────────────────────
-    // PLAYER ENTITY
+    // PLAYER ENTITY — apply finalStats from character creation if available
     // ─────────────────────────────────────────────────────────────
-    const player = new Player();
+    const { finalStats } = useGameStore.getState();
+    const player = new Player(finalStats ?? {});
     player.spawn(scene, Vector3.Zero());
+
+    // Initial sync to HUD store
+    useGameStore.getState().setPlayerStats({ ...player.stats });
 
     // ─────────────────────────────────────────────────────────────
     // MOVEMENT SYSTEM — central entity update registry
@@ -65,6 +72,10 @@ export const createWorldScene = (engine: Engine): Scene => {
     // GAME LOOP
     // ─────────────────────────────────────────────────────────────
     const CAMERA_LERP = 0.05;
+
+    // Throttle HUD stat sync — only push every ~100ms to avoid React churn
+    let _hudSyncTimer = 0;
+    const HUD_SYNC_INTERVAL = 0.1; // seconds
 
     scene.registerBeforeRender(() => {
         const dt = engine.getDeltaTime() / 1000;
@@ -80,6 +91,13 @@ export const createWorldScene = (engine: Engine): Scene => {
         camera.target.x += (player.position.x - camera.target.x) * CAMERA_LERP;
         camera.target.y += (player.position.y - camera.target.y) * CAMERA_LERP;
         camera.target.z += (player.position.z - camera.target.z) * CAMERA_LERP;
+
+        // Sync player stats to Zustand HUD store (throttled)
+        _hudSyncTimer += dt;
+        if (_hudSyncTimer >= HUD_SYNC_INTERVAL) {
+            _hudSyncTimer = 0;
+            useGameStore.getState().setPlayerStats({ ...player.stats });
+        }
     });
 
     // Clean up all entities when the scene is disposed
@@ -186,6 +204,62 @@ export const createWorldScene = (engine: Engine): Scene => {
 
     // Expose to player movement system
     (scene as any).clickTarget = clickTarget;
+
+    // ─────────────────────────────────────────────────────────────
+    // DEBUG REGISTRY — populate references for the debug panel
+    // ─────────────────────────────────────────────────────────────
+    debugRegistry.scene          = scene;
+    debugRegistry.player         = player;
+    debugRegistry.movementSystem = movementSystem;
+    debugRegistry.camera         = camera;
+    debugRegistry.clickTarget    = clickTarget;
+    debugRegistry.debugGrid      = gridOverlay;
+
+    // Track debug-spawned entities separately so they can be removed
+    const _debugSpawned = new Map<string, NPC | Monster>();
+
+    debugRegistry.spawnEntity = (type, name, x, z) => {
+        try {
+            if (type === 'npc') {
+                const npc = new NPC({ name, dialogueId: 'debug' });
+                npc.spawn(scene, new Vector3(x, 0, z));
+                movementSystem.register(npc);
+                _debugSpawned.set(npc.id, npc);
+                return npc;
+            } else {
+                const monster = new Monster({ name });
+                monster.spawn(scene, new Vector3(x, 0, z));
+                movementSystem.register(monster);
+                _debugSpawned.set(monster.id, monster);
+                return monster;
+            }
+        } catch (err) {
+            console.error('[Debug] spawnEntity failed:', err);
+            return null;
+        }
+    };
+
+    debugRegistry.removeEntity = (id) => {
+        const entity = _debugSpawned.get(id);
+        if (entity) {
+            movementSystem.unregister(entity);
+            entity.dispose();
+            _debugSpawned.delete(id);
+        }
+    };
+
+    // Clear registry when the scene is disposed (e.g. scene change)
+    scene.onDisposeObservable.add(() => {
+        debugRegistry.scene          = null;
+        debugRegistry.player         = null;
+        debugRegistry.movementSystem = null;
+        debugRegistry.camera         = null;
+        debugRegistry.clickTarget    = null;
+        debugRegistry.debugGrid      = null;
+        debugRegistry.spawnEntity    = null;
+        debugRegistry.removeEntity   = null;
+        _debugSpawned.clear();
+    });
 
     return scene;
 };

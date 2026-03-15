@@ -11,7 +11,7 @@ const PANEL = 'rgba(10, 10, 18, 0.92)';
 const BORDER = 'rgba(245, 215, 110, 0.3)';
 
 export const CharacterCreateUI: React.FC = () => {
-    const { setScene, setSelectedRace, setSelectedClass, setFinalStats } = useGameStore();
+    const { setScene, setSelectedRace, setSelectedClass, setFinalStats, setPlayerName } = useGameStore();
 
     // Data
     const [races, setRaces] = useState<Race[]>([]);
@@ -22,6 +22,7 @@ export const CharacterCreateUI: React.FC = () => {
     // Selections
     const [selectedRace, setRace] = useState<Race | null>(null);
     const [selectedClass, setClass] = useState<CharacterClass | null>(null);
+    const [characterName, setCharacterName] = useState<string>('');
 
     // Load JSON data on mount
     useEffect(() => {
@@ -49,6 +50,7 @@ export const CharacterCreateUI: React.FC = () => {
         setSelectedRace(selectedRace.id);
         setSelectedClass(selectedClass.id);
         setFinalStats(finalStats);
+        setPlayerName(characterName.trim() || 'Adventurer');
         setScene('WorldScene');
     };
 
@@ -108,6 +110,43 @@ export const CharacterCreateUI: React.FC = () => {
                         {Object.entries(statPreview).map(([stat, value]) => (
                             <StatRow key={stat} label={stat} value={value} />
                         ))}
+                    </div>
+
+                    {/* Character Name Input */}
+                    <div style={{ width: '100%', marginBottom: '0.8rem' }}>
+                        <label style={{
+                            display: 'block',
+                            color: '#888',
+                            fontSize: '0.75rem',
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            marginBottom: '0.35rem',
+                        }}>
+                            Character Name
+                        </label>
+                        <input
+                            type="text"
+                            value={characterName}
+                            onChange={(e) => setCharacterName(e.target.value)}
+                            maxLength={24}
+                            placeholder="Adventurer"
+                            style={{
+                                width: '100%',
+                                background: 'rgba(0,0,0,0.5)',
+                                border: `1px solid ${characterName.trim() ? GOLD : '#333'}`,
+                                borderRadius: '3px',
+                                color: '#eaeaea',
+                                fontFamily: 'inherit',
+                                fontSize: '0.95rem',
+                                letterSpacing: '0.08em',
+                                padding: '0.45rem 0.6rem',
+                                outline: 'none',
+                                transition: 'border-color 0.2s ease',
+                                boxSizing: 'border-box',
+                            }}
+                            onFocus={(e) => (e.currentTarget.style.borderColor = GOLD)}
+                            onBlur={(e) => (e.currentTarget.style.borderColor = characterName.trim() ? GOLD : '#333')}
+                        />
                     </div>
 
                     <button

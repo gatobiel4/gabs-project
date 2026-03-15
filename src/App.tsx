@@ -1,24 +1,31 @@
 import { useEffect } from 'react';
 import { BabylonCanvas } from './app/BabylonCanvas';
 import { useGameStore } from './state/gameStore';
-import { MainMenuUI } from './game/ui/MainMenuUI';
+import { MainMenuUI }       from './game/ui/MainMenuUI';
 import { CharacterCreateUI } from './game/ui/CharacterCreateUI';
-import { PauseMenuUI } from './game/ui/PauseMenuUI';
+import { PauseMenuUI }      from './game/ui/PauseMenuUI';
+import { HUD }              from './game/ui/HUD';
+import { NotificationSystem } from './game/ui/NotificationSystem';
+import { DebugWindow }      from './game/ui/DebugWindow';
 import './App.css';
 
 function App() {
-  const { currentScene, setScene, isPaused, togglePause } = useGameStore();
+  const { currentScene, isPaused, togglePause, toggleDebugMode } = useGameStore();
 
-  // ESC key toggles pause — only when in WorldScene
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // ESC — toggle pause (WorldScene only)
       if (e.key === 'Escape' && currentScene === 'WorldScene') {
         togglePause();
+      }
+      // Backtick ` — toggle debug panel (any scene, dev only)
+      if (e.key === '=') {
+        toggleDebugMode();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentScene, togglePause]);
+  }, [currentScene, togglePause, toggleDebugMode]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative', background: '#000' }}>
@@ -31,37 +38,17 @@ function App() {
       {/* RENDER CHARACTER CREATION UI when in CharacterCreateScene */}
       {currentScene === 'CharacterCreateScene' && <CharacterCreateUI />}
 
+      {/* RENDER HUD when in WorldScene (hidden while paused — pause menu covers it) */}
+      {currentScene === 'WorldScene' && !isPaused && <HUD />}
+
       {/* RENDER PAUSE MENU when in WorldScene and paused */}
       {currentScene === 'WorldScene' && isPaused && <PauseMenuUI />}
 
-      {/* UI Overlay to test scene switching (Temp Debugger) */}
-      <div style={{
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        background: 'rgba(0,0,0,0.7)',
-        padding: '10px',
-        borderRadius: '8px',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        fontFamily: 'Inter, sans-serif',
-        zIndex: 9999
-      }}>
-        <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
-          Current Scene: <span style={{ color: '#646cff' }}>{currentScene}</span>
-        </div>
-        <button onClick={() => setScene('MainMenuScene')} style={{ cursor: 'pointer', padding: '6px 12px' }}>
-          Load Main Menu
-        </button>
-        <button onClick={() => setScene('WorldScene')} style={{ cursor: 'pointer', padding: '6px 12px' }}>
-          Load World Scene
-        </button>
-        <button onClick={() => setScene('CharacterCreateScene')} style={{ cursor: 'pointer', padding: '6px 12px' }}>
-          Load Character Create Scene
-        </button>
-      </div>
+      {/* NOTIFICATION SYSTEM — global, always visible across all scenes */}
+      <NotificationSystem />
+
+      {/* DEBUG PANEL — toggle with Backtick ` key */}
+      <DebugWindow />
     </div>
   );
 }

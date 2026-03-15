@@ -52,13 +52,22 @@ Use this checklist to track progress. Mark items as you complete them.
 - [x] Create `NPC` entity
 - [x] Create `Monster` entity
 - [x] Create `MovementSystem`
-- [ ] Create `InteractionSystem` *(deferred → Step 6)*
-- [ ] Create `CombatSystem` (stub) *(deferred → Step 10)*
-- [ ] Create `QuestSystem` (stub) *(deferred → Step 12)*
+- [ ] Create `InteractionSystem` *(deferred → Step 7)*
+- [ ] Create `CombatSystem` (stub) *(deferred → Step 11)*
+- [ ] Create `QuestSystem` (stub) *(deferred → Step 13)*
 
 ---
 
-## 6) Interaction
+## 6) HUD & UI
+- [ ] Create HUD Overlay container (React)
+- [ ] Implement dynamic Health, Mana, and XP bars
+- [ ] Add Player stats summary (Level, Gold)
+- [ ] Create a notification system for game messages
+- [ ] Implement mouse cursor styling (ARPG-style)
+
+---
+
+## 7) Interaction
 - [ ] Add proximity detection for NPC interaction
 - [ ] Add interact prompt (React overlay)
 - [ ] Implement “Press E” interaction trigger
@@ -67,19 +76,19 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 7) UI (React)
+## 8) UI (React)
 - [x] Main Menu screen
 - [x] Character Creation screen
 - [ ] HUD (HP/MP/Level)
 - [ ] Inventory window
 - [ ] Dialogue window
 - [ ] Quest log
-- [x] Pause/Settings menu *(stub — Step 15)*
+- [x] Pause/Settings menu *(stub — Step 16)*
 - [x] Wire UI state through Zustand
 
 ---
 
-## 8) Data-Driven RPG (JSON)
+## 9) Data-Driven RPG (JSON)
 - [x] Create `races.json`
 - [x] Create `classes.json`
 - [ ] Create `items.json`
@@ -92,7 +101,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 9) Inventory & Equipment
+## 10) Inventory & Equipment
 - [ ] Implement inventory data model (definitions + instances)
 - [ ] Implement pickup items in-world
 - [ ] Implement inventory UI list
@@ -103,7 +112,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 10) Combat (Pick one first)
+## 11) Combat (Pick one first)
 ### Option A: Simple Real-Time
 - [ ] Enemy HP + collider
 - [ ] Player attack + cooldown
@@ -119,7 +128,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 11) AI
+## 12) AI
 - [ ] Create enemy state machine (Idle/Patrol/Chase/Attack)
 - [ ] Implement detection radius
 - [ ] Implement patrol path (optional)
@@ -129,7 +138,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 12) Dialogue & Quests
+## 13) Dialogue & Quests
 - [ ] Define dialogue format (nodes/options/conditions/effects)
 - [ ] Implement dialogue runner (apply effects)
 - [ ] Implement quest flags
@@ -138,7 +147,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 13) Save/Load
+## 14) Save/Load
 - [ ] Define save format (versioned)
 - [ ] Save player data (stats/inventory/equipment/position)
 - [ ] Save quest flags
@@ -148,7 +157,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 14) Vertical Slice (15–30 minutes)
+## 15) Vertical Slice (15–30 minutes)
 - [ ] Build 1 town area
 - [ ] Add 3 NPCs
 - [ ] Add 1 small dungeon
@@ -160,7 +169,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 15) Performance & Polish
+## 16) Performance & Polish
 - [ ] Replace repeated props with instancing/thin instances
 - [ ] Reduce dynamic lights
 - [ ] Optimize materials and texture sizes
@@ -170,7 +179,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ---
 
-## 16) Desktop Packaging
+## 17) Desktop Packaging
 - [ ] Decide: Tauri or Electron
 - [ ] Create desktop wrapper project
 - [ ] Configure build pipeline for desktop
@@ -183,7 +192,7 @@ Use this checklist to track progress. Mark items as you complete them.
 
 ### Main Menu
 - [ ] Wire "New Game" button → CharacterCreateScene (instead of WorldScene directly)
-- [ ] Enable "Continue" button when save data exists (Step 13)
+- [ ] Enable "Continue" button when save data exists (Step 14)
 - [x] Add animated background particles or depth to the scene (Video background)
 - [ ] Add ambient menu music and sound effects on hover/click
 
@@ -206,7 +215,7 @@ Use this checklist to track progress. Mark items as you complete them.
 ### Player
 - [x] Add a subtle bobbing animation while moving (idle/walk feel) (Added 3D animations)
 - [ ] Improve click marker — shrink animation, coloured ring
-- [x] Replace capsule with a proper low-poly character mesh (Step 14) (Integrated character-male-d.glb)
+- [x] Replace capsule with a proper low-poly character mesh (Step 15) (Integrated character-male-d.glb)
 - [ ] Add a baked drop shadow or blob shadow directly under the player
 - [ ] Add footstep particle puffs when moving
 

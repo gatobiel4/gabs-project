@@ -52,6 +52,11 @@ export class MovementSystem {
         return this._entities.size;
     }
 
+    /** Return a read-only view of all tracked entities (for debug use) */
+    public getEntities(): ReadonlyMap<string, Entity> {
+        return this._entities;
+    }
+
     /** Unregister and dispose all entities (used on scene cleanup) */
     public disposeAll(): void {
         for (const entity of this._entities.values()) {
